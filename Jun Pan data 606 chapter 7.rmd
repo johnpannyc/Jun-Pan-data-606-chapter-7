@@ -1,0 +1,157 @@
+---
+title: "DATA 606 Chapter 7"
+author: "Jun Pan"
+date: "November 22, 2018"
+output: html_document
+---
+
+```{r}
+require(tidyverse)
+require(magrittr)
+require(knitr)
+```
+
+```
+7.24 Nutrition at Starbucks, Part I. The scatterplot below shows the relationship between the number of calories and amount of carbohydrates (in grams) Starbucks food menu items contain.21 Since Starbucks only lists the number of calories on the display items, we are interested in predicting the amount of carbs a menu item has based on its calorie content.
+```
+(a) Describe the relationship between number of calories and amount of carbohydrates (in grams) that Starbucks food menu items contain. 
+
+```
+In general, the calories inceases while the barbohydrates increases.  There is a lot of variation.  But it appears a positive linear correlation pattern with carlories vs. carbohydrates.
+```
+
+(b) In this scenario, what are the explanatory and response variables?
+
+```
+The explanatory variable is calories and the response variables is carbohydrates.
+```
+
+(c) Why might we want to fit a regression line to these data? 
+
+```
+To predict the number of carbohydrates in grams for a given number of calories eaten. 
+```
+
+(d) Do these data meet the conditions required for fitting a least squares line?
+
+```
+No, the residuals plot shows that the variance seems to increase as the number of calories increases.  So the data do not meet the "constant variability" condition for using a least squares linear regression.
+```
+
+```
+7.26 Body measurements, Part III. Exercise 7.15 introduces data on shoulder girth and height of a group of individuals. The mean shoulder girth is 107.20 cm with a standard deviation of 10.37 cm. The mean height is 171.14 cm with a standard deviation of 9.41 cm. The correlation between height and shoulder girth is 0.67.
+```
+
+(a) Write the equation of the regression line for predicting height. 
+```{r}
+# calculate the slope
+b1 <-  0.67 * (9.41/10.37)
+
+# calculate the intercept
+b0 <- 171.14 - b1 * 107.2
+paste("Regression line equation: Height =", round(b0,3), "+",round(b1,3),"* Shoulder")
+```
+
+
+(b) Interpret the slope and the intercept in this context. 
+
+```
+The slope is 0.608. Which means that for every 10 cm increase in shoulder girth, there will be an additional 6.08 cm to the height. At a shoulder girth of 0 cm we would expect a height of `r round(b0, 2)` cm.  Zero shoulder girth does not make sense in this context so the intercept serves only to set the height of the line.  
+```
+
+(c) Calculate R2 of the regression line for predicting height from shoulder girth, and interpret it in the context of the application. 
+
+```{r}
+R2 <- 0.67^2
+paste("R squared: ", round(R2,3))
+# This means that 44.9% of the variation found in this data is explained by the linear model i.e. explained by the shoulder girth width.
+```
+
+
+(d) A randomly selected student from your class has a shoulder girth of 100 cm. Predict the height of this student using the model. 
+
+
+```{r}
+height <- b0 + b1 * 100
+print(height)
+```
+
+
+
+(e) The student from part (d) is 160 cm tall. Calculate the residual, and explain what this residual means. 
+
+```{r}
+residual <- 160 - height
+print(residual)
+```
+
+
+(f) A one year old has a shoulder girth of 56 cm. Would it be appropriate to use this linear model to predict the height of this child?
+
+```
+The lowest value in the scatterplot in excercise 7.15 is about 85. So a shoulder girth of only 56 cm would not be an appropriate use of this model.  
+```
+
+```
+7.30 Cats, Part I. The following regression output is for predicting the heart weight (in g) of cats from their body weight (in kg). The coe"cients are estimated using a dataset of 144 domestic cats. Estimate Std. Error t value Pr(>|t|) (Intercept) -0.357 0.692 -0.515 0.607 body wt 4.034 0.250 16.119 0.000 s = 1.452 R2 = 64.66% R2 adj = 64.41% 
+```
+
+
+(a) Write out the linear model. 
+```
+linear model equation y = b0 + b1 * x, where b0 is the heart weight of the intercept and b1 is the slope.
+the linear regression model here is: Heart Weight (g) = -0.357 + 4.034 * `Body Weight (kg)`
+```
+
+
+(b) Interpret the intercept. 
+```
+At a body weight of 0 kg we would expect a heart weight of -0.357 g.  although it does not make sense, it serves to adjust the height of the regression line.
+```
+
+(c) Interpret the slope. 
+```
+For each additional kg increase in body weight, we expect an additional 4.034 grams in the heart weight.
+```
+
+(d) Interpret R2. 
+```
+Roughly 64.66% of the variability in heart weight is predicted by body weight in this model.  
+```
+
+(e) Calculate the correlation coe"cient.
+```{r}
+r <- sqrt(64.66/100)
+print(r)
+```
+
+
+
+```
+7.40 Rate my professor. Many college courses conclude by giving students the opportunity to evaluate the course and the instructor anonymously. However, the use of these student evaluations as an indicator of course quality and teaching e???ectiveness is often criticized because these measures may reflect the influence of non-teaching related characteristics, such as the physical appearance of the instructor. Researchers at University of Texas, Austin collected data on teaching evaluation score (higher score means better) and standardized beauty score (a score of 0 means average, negative score means below average, and a positive score means above average) for a
+sample of 463 professors.24 The scatterplot below shows the relationship between these variables, and also provided is a regression output for predicting teaching evaluation score from beauty score.
+```
+(a) Given that the average standardized beauty score is -0.0883 and average teaching evaluation score is 3.9983, calculate the slope. Alternatively, the slope may be computed using just the information provided in the model summary table. 
+```{r}
+#the linear model equation y = b0 + b1 * x
+b1 <- (4.010-3.9983) / (0-(-0.0883))
+b1
+```
+
+
+
+(b) Do these data provide convincing evidence that the slope of the relationship between teaching evaluation and beauty is positive? Explain your reasoning. 
+```
+Yes.  A postive slope indicates a positive correlation.  The p-value in the regression table is close to 0 which suggests that we should reject the Null hyposthesis (NO correlation).
+```
+
+
+(c) List the conditions required for linear regression and check if each one is satisfied for this model based on the following diagnostic plots.
+```
+1."Linearity": The top left plot shows that the data appear to be linear.
+2. Nearly normal residuals: The top tow plots shw that the residuals look like normal with a little bit left skew.
+3. Constant variability:by looking at the residual plots, it appears to be constant variability.
+4. Independent obsearvation: it looks like independent observations.
+So, we can perform the linear regression.
+```
+
